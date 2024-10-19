@@ -1,0 +1,82 @@
+{
+    "tamanho": [
+        "Pequeno",
+        "Medio",
+        "Grande",
+        "Colossal"
+    ],
+    "cor": [
+        "Vermelha", 
+        "Laranja", 
+        "Amarela", 
+        "Verde", 
+        "Azul", 
+        "Anil", 
+        "Violeta"
+    ],
+    "local_queda": [
+        "América",
+        "Europa",
+        "Ásia",
+        "Oceania",
+        "Antártida",
+        "Oceano Atlântico",
+        "Oceano Pacífico",
+        "Oceano Índico",
+        "Oceano Glacial Ártico"
+    ],
+    "poderio": [
+        "Baixo",
+        "Moderado",
+        "Alto"
+    ],
+    "armas": [
+        "Não possui",
+        "Solar Flare Cannon",
+        "Antimatter Pulsar",
+        "Void Ripper",
+        "Plasma Lance",
+        "Star Shards",
+        "Bio-Kinetic Mines",
+        "Hypervelocity Spheres",
+        "Mind-Control Beam"
+    ],
+    "combustiveis": [
+        "Fragmentos de Estrela Cadente",
+        "Névoa Cristalina",
+        "Cristais de Gravidade Líquida",
+        "Matéria Escura",
+        "Campo de Vibração Quântica",
+        "Raio de Gênese",
+        "Sangue de Xenófago"
+    ],
+    "trip_estado": [
+        "Bem",
+        "Calmo",
+        "Agitado",
+        "Violento",
+        "Coma",
+        "Doente",
+        "Terminal",
+        "Morto"
+    ],
+    "avaria": [
+        "Novo",
+        "Uso mínimo",
+        "Desgastado",
+        "Muito Desgastado",
+        "Destruído"
+    ],
+    "potencial": [
+        "Baixo",
+        "Mediano",
+        "Alto",
+        "Além da Compreensão"
+    ],
+    "periculosidade": [
+        "Baixo",
+        "Moderado",
+        "Alto",
+        "Crítico"
+    ]
+}

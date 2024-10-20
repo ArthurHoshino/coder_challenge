@@ -1,10 +1,10 @@
-import customtkinter, json
+import json
+import tkinter as tk
+from tkinter import ttk
 
 class InterfaceIndex:
     def __init__(self):
-        customtkinter.set_appearance_mode('dark')
-        customtkinter.set_default_color_theme('green')
-        self.root = customtkinter.CTk()
+        self.root = tk.Tk()
         self.root.geometry("1000x650")
         self.root.grid_columnconfigure((0, 1, 2, 3), weight=1)
         self.showFunctions = {
@@ -14,69 +14,111 @@ class InterfaceIndex:
 
         # opcoes para registro
         self.menuOpt = {}
+        self.optValue = {
+            "tamanho": tk.StringVar(self.root),
+            "cor": tk.StringVar(self.root),
+            "local_queda": tk.StringVar(self.root),
+            "poderio": tk.StringVar(self.root),
+            "armas": list(),
+            "combustiveis": tk.StringVar(self.root),
+            "qtdSobrevivente": tk.StringVar(self.root),
+            "trip_estado": tk.StringVar(self.root),
+            "avaria": tk.StringVar(self.root),
+            "potencial": tk.StringVar(self.root),
+            "periculosidade": tk.StringVar(self.root)
+        }
 
         # main
-        self.buttonRegistro = customtkinter.CTkButton(self.root, text="Registrar nave", command=self.showFunctions['registro'])
-        self.buttonVisualizar = customtkinter.CTkButton(self.root, text="Visualizar naves")
+        self.buttonRegistro = ttk.Button(self.root, text="Registrar nave", command=self.showFunctions['registro'])
+        self.buttonVisualizar = ttk.Button(self.root, text="Visualizar naves")
 
         # registro
-        self.tamanhoTitle = None
+        self.tamanhoLabel = None
         self.tamanho = None
-        self.corTitle = None
+        self.corLabel = None
         self.cor = None
-        self.localTitle = None
+        self.localLabel = None
         self.local = None
-        self.poderTitle = None
+        self.poderLabel = None
         self.poder = None
-        self.armamentoTitle = None
+        self.armamentoLabel = None
         self.armamento = None
-        self.combustivelTitle = None
+        self.combustivelLabel = None
         self.combustivel = None
-        self.qtdSobreviventeTitle = None
+        self.qtdSobreviventeLabel = None
         self.qtdSobrevivente = None
+        self.estadoSobreviventeLabel = None
         self.estadoSobrevivente = None
-        self.avariaTitle = None
+        self.avariaLabel = None
         self.avaria = None
-        self.potencialTitle = None
+        self.potencialLabel = None
         self.potencial = None
-        self.periculosidadeTitle = None
+        self.periculosidadeLabel = None
         self.periculosidade = None
-        self.buttom = customtkinter.CTkButton(self.root, text="Enviar", command=self.registrar)
-        self.buttomVoltar = customtkinter.CTkButton(self.root, text="Voltar", command=self.showFunctions['main'])
+        self.buttom = ttk.Button(self.root, text="Enviar", command=self.registrar)
+        self.buttomVoltar = ttk.Button(self.root, text="Voltar", command=self.showFunctions['main'])
+        self.vcmd = (self.root.register(self.validate))
 
     def getOptions(self):
         with open("src/options.json", "r", encoding='utf-8') as f:
             self.menuOpt = json.load(f)
 
-        self.tamanhoTitle = customtkinter.CTkLabel(self.root, text="Tamanho da nave", font=('Comic Sans MS', 14))
-        self.tamanho = customtkinter.CTkOptionMenu(self.root, values=self.menuOpt['tamanho'])
-        self.corTitle = customtkinter.CTkLabel(self.root, text="Cor da nave", font=('Comic Sans MS', 14))
-        self.cor = customtkinter.CTkOptionMenu(self.root, values=self.menuOpt['cor'])
-        self.localTitle = customtkinter.CTkLabel(self.root, text="Local da queda", font=('Comic Sans MS', 14))
-        self.local = customtkinter.CTkOptionMenu(self.root, values=self.menuOpt['local_queda'])
-        self.poderTitle = customtkinter.CTkLabel(self.root, text="Poderio bélico", font=('Comic Sans MS', 14))
-        self.poder = customtkinter.CTkOptionMenu(self.root, values=self.menuOpt['poderio'])
-        self.armamentoTitle = customtkinter.CTkLabel(self.root, text="Armamento", font=('Comic Sans MS', 14))
-        self.armamento = customtkinter.CTkOptionMenu(self.root, values=self.menuOpt['armas'])
-        self.combustivelTitle = customtkinter.CTkLabel(self.root, text="Combustível", font=('Comic Sans MS', 14))
-        self.combustivel = customtkinter.CTkOptionMenu(self.root, values=self.menuOpt['combustiveis'])
-        self.qtdSobreviventeTitle = customtkinter.CTkLabel(self.root, text="Número de sobreviventes", font=('Comic Sans MS', 14))
-        self.qtdSobrevivente = customtkinter.CTkEntry(self.root)
-        self.estadoSobreviventeTitle = customtkinter.CTkLabel(self.root, text="Estado dos sobreviventes", font=('Comic Sans MS', 14))
-        self.estadoSobrevivente = customtkinter.CTkOptionMenu(self.root, values=self.menuOpt['trip_estado'])
-        self.avariaTitle = customtkinter.CTkLabel(self.root, text="Grau de avaria", font=('Comic Sans MS', 14))
-        self.avaria = customtkinter.CTkOptionMenu(self.root, values=self.menuOpt['avaria'])
-        self.potencialTitle = customtkinter.CTkLabel(self.root, text="Potencial de prospecção tecnológica", font=('Comic Sans MS', 14))
-        self.potencial = customtkinter.CTkOptionMenu(self.root, values=self.menuOpt['potencial'])
-        self.periculosidadeTitle = customtkinter.CTkLabel(self.root, text="Grau de periculosidade", font=('Comic Sans MS', 14))
-        self.periculosidade = customtkinter.CTkOptionMenu(self.root, values=self.menuOpt['periculosidade'])
+        self.tamanhoLabel = ttk.Label(self.root, text="Tamanho da nave", font=('Comic Sans MS', 14))
+        self.tamanho = ttk.OptionMenu(self.root, self.optValue['tamanho'], self.menuOpt['tamanho'][0], *self.menuOpt['tamanho'])
+        self.corLabel = ttk.Label(self.root, text="Cor da nave", font=('Comic Sans MS', 14))
+        self.cor = ttk.OptionMenu(self.root, self.optValue['cor'], self.menuOpt['cor'][0], *self.menuOpt['cor'])
+        self.localLabel = ttk.Label(self.root, text="Local da queda", font=('Comic Sans MS', 14))
+        self.local = ttk.OptionMenu(self.root, self.optValue['local_queda'], self.menuOpt['local_queda'][0], *self.menuOpt['local_queda'])
+        self.poderLabel = ttk.Label(self.root, text="Poderio bélico", font=('Comic Sans MS', 14))
+        self.poder = ttk.OptionMenu(self.root, self.optValue['poderio'], self.menuOpt['poderio'][0], *self.menuOpt['poderio'])
+        self.armamentoLabel = ttk.Label(self.root, text="Armamento", font=('Comic Sans MS', 14))
+        self.armamento = tk.Listbox(self.root, self.optValue['armas'], selectmode="multiple", exportselection=0)
+        for item in self.menuOpt['armas']:
+            self.armamento.insert(self.menuOpt['armas'].index(item), item)
+
+        self.combustivelLabel = ttk.Label(self.root, text="Combustível", font=('Comic Sans MS', 14))
+        self.combustivel = ttk.OptionMenu(self.root, self.optValue['combustiveis'], self.menuOpt['combustiveis'][0], *self.menuOpt['combustiveis'])
+        self.qtdSobreviventeLabel = ttk.Label(self.root, text="Número de sobreviventes", font=('Comic Sans MS', 14))
+        self.qtdSobrevivente = ttk.Entry(self.root, textvariable=self.optValue['qtdSobrevivente'], validate='all', validatecommand=(self.vcmd, '%P'))
+        self.estadoSobreviventeLabel = ttk.Label(self.root, text="Estado dos sobreviventes", font=('Comic Sans MS', 14))
+        self.estadoSobrevivente = ttk.OptionMenu(self.root, self.optValue['trip_estado'], self.menuOpt['trip_estado'][0], *self.menuOpt['trip_estado'])
+        self.avariaLabel = ttk.Label(self.root, text="Grau de avaria", font=('Comic Sans MS', 14))
+        self.avaria = ttk.OptionMenu(self.root, self.optValue['avaria'], self.menuOpt['avaria'][0], *self.menuOpt['avaria'])
+        self.potencialLabel = ttk.Label(self.root, text="Potencial de prospecção tecnológica", font=('Comic Sans MS', 14))
+        self.potencial = ttk.OptionMenu(self.root, self.optValue['potencial'], self.menuOpt['potencial'][0], *self.menuOpt['potencial'])
+        self.periculosidadeLabel = ttk.Label(self.root, text="Grau de periculosidade", font=('Comic Sans MS', 14))
+        self.periculosidade = ttk.OptionMenu(self.root, self.optValue['periculosidade'], self.menuOpt['periculosidade'][0], *self.menuOpt['periculosidade'])
 
     def hide_all(self):
         self.hideMain()
         self.hideRegistro()
     
+    def validate(self, P):
+        if str.isdigit(P) or P == "":
+            return True
+        else:
+            return False
+    
     def registrar(self):
-        print(self.options.get())
+        data = {}
+        for k, v in self.optValue.items():
+            if (k == "armas"):
+                reslist = list()
+                combinacaoValor = 0
+                selection = self.armamento.curselection()
+
+                for i in selection:
+                    entrada = self.armamento.get(i)
+                    reslist.append(entrada)
+                    
+                    index = self.menuOpt['armas'].index(entrada)
+                    combinacaoValor += 2**index
+                print(f"Armas: {reslist}; Combinacao: {combinacaoValor}")
+            elif (k == 'qtdSobreviventes'):
+                data['tripulacao_sobrevivente'] = int(v.get())
+            else:
+                print(f"{k}: {v.get()}")
+                data[k] = self.menuOpt[k].index(v.get())
     
     # show functions
     def showMain(self):
@@ -87,31 +129,31 @@ class InterfaceIndex:
     def showRegistro(self):
         self.hide_all()
 
-        self.tamanhoTitle.grid(row=0, column=0, padx=10, pady=20, sticky='ew')
+        self.tamanhoLabel.grid(row=0, column=0, padx=10, pady=20, sticky=tk.EW)
         self.tamanho.grid(row=0, column=1, padx=10, pady=20, sticky='ew')
-        self.corTitle.grid(row=1, column=0, padx=10, pady=20, sticky='ew')
+        self.corLabel.grid(row=1, column=0, padx=10, pady=20, sticky='ew')
         self.cor.grid(row=1, column=1, padx=10, pady=20, sticky='ew')
-        self.localTitle.grid(row=2, column=0, padx=10, pady=20, sticky='ew')
+        self.localLabel.grid(row=2, column=0, padx=10, pady=20, sticky='ew')
         self.local.grid(row=2, column=1, padx=10, pady=20, sticky='ew')
-        self.poderTitle.grid(row=3, column=0, padx=10, pady=20, sticky='ew')
+        self.poderLabel.grid(row=3, column=0, padx=10, pady=20, sticky='ew')
         self.poder.grid(row=3, column=1, padx=10, pady=20, sticky='ew')
-        self.armamentoTitle.grid(row=4, column=0, padx=10, pady=20, sticky='ew')
+        self.armamentoLabel.grid(row=4, column=0, padx=10, pady=20, sticky='ew')
         self.armamento.grid(row=4, column=1, padx=10, pady=20, sticky='ew')
-        self.combustivelTitle.grid(row=5, column=0, padx=10, pady=20, sticky='ew')
+        self.combustivelLabel.grid(row=5, column=0, padx=10, pady=20, sticky='ew')
         self.combustivel.grid(row=5, column=1, padx=10, pady=20, sticky='ew')
-        self.qtdSobreviventeTitle.grid(row=0, column=2, padx=10, pady=20, sticky='ew')
+        self.qtdSobreviventeLabel.grid(row=0, column=2, padx=10, pady=20, sticky='ew')
         self.qtdSobrevivente.grid(row=0, column=3, padx=10, pady=20, sticky='ew')
-        self.estadoSobreviventeTitle.grid(row=1, column=2, padx=10, pady=20, sticky='ew')
+        self.estadoSobreviventeLabel.grid(row=1, column=2, padx=10, pady=20, sticky='ew')
         self.estadoSobrevivente.grid(row=1, column=3, padx=10, pady=20, sticky='ew')
-        self.avariaTitle.grid(row=2, column=2, padx=10, pady=20, sticky='ew')
+        self.avariaLabel.grid(row=2, column=2, padx=10, pady=20, sticky='ew')
         self.avaria.grid(row=2, column=3, padx=10, pady=20, sticky='ew')
-        self.potencialTitle.grid(row=3, column=2, padx=10, pady=20, sticky='ew')
+        self.potencialLabel.grid(row=3, column=2, padx=10, pady=20, sticky='ew')
         self.potencial.grid(row=3, column=3, padx=10, pady=20, sticky='ew')
-        self.periculosidadeTitle.grid(row=4, column=2, padx=10, pady=20, sticky='ew')
+        self.periculosidadeLabel.grid(row=4, column=2, padx=10, pady=20, sticky='ew')
         self.periculosidade.grid(row=4, column=3, padx=10, pady=20, sticky='ew')
 
-        self.buttom.grid(row=11, column=0, padx=20, pady=20, sticky='w', columnspan=2)
-        self.buttomVoltar.grid(row=11, column=2, padx=20, pady=20, sticky='w', columnspan=2)
+        self.buttomVoltar.grid(row=11, column=0, padx=20, pady=20, sticky='w', columnspan=2)
+        self.buttom.grid(row=11, column=2, padx=20, pady=20, sticky='w', columnspan=2)
 
     # hide functions
     def hideMain(self):
@@ -119,27 +161,27 @@ class InterfaceIndex:
         self.buttonVisualizar.pack_forget()
 
     def hideRegistro(self):
-        self.tamanhoTitle.grid_forget()
+        self.tamanhoLabel.grid_forget()
         self.tamanho.grid_forget()
-        self.corTitle.grid_forget()
+        self.corLabel.grid_forget()
         self.cor.grid_forget()
-        self.localTitle.grid_forget()
+        self.localLabel.grid_forget()
         self.local.grid_forget()
-        self.poderTitle.grid_forget()
+        self.poderLabel.grid_forget()
         self.poder.grid_forget()
-        self.armamentoTitle.grid_forget()
+        self.armamentoLabel.grid_forget()
         self.armamento.grid_forget()
-        self.combustivelTitle.grid_forget()
+        self.combustivelLabel.grid_forget()
         self.combustivel.grid_forget()
-        self.qtdSobreviventeTitle.grid_forget()
+        self.qtdSobreviventeLabel.grid_forget()
         self.qtdSobrevivente.grid_forget()
-        self.estadoSobreviventeTitle.grid_forget()
+        self.estadoSobreviventeLabel.grid_forget()
         self.estadoSobrevivente.grid_forget()
-        self.avariaTitle.grid_forget()
+        self.avariaLabel.grid_forget()
         self.avaria.grid_forget()
-        self.potencialTitle.grid_forget()
+        self.potencialLabel.grid_forget()
         self.potencial.grid_forget()
-        self.periculosidadeTitle.grid_forget()
+        self.periculosidadeLabel.grid_forget()
         self.periculosidade.grid_forget()
         self.buttom.grid_forget()
         self.buttomVoltar.grid_forget()

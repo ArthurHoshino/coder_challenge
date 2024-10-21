@@ -1,12 +1,14 @@
 import json
 import tkinter as tk
 from tkinter import ttk
+from src.classes.Registro import Registro
 
 class InterfaceIndex:
     def __init__(self):
         self.root = tk.Tk()
         self.root.geometry("1000x650")
         self.root.grid_columnconfigure((0, 1, 2, 3), weight=1)
+        self.registro = Registro()
         self.showFunctions = {
             "main": self.showMain,
             "registro": self.showRegistro
@@ -101,24 +103,32 @@ class InterfaceIndex:
     
     def registrar(self):
         data = {}
-        for k, v in self.optValue.items():
-            if (k == "armas"):
-                reslist = list()
-                combinacaoValor = 0
-                selection = self.armamento.curselection()
+        data['tamanho'] = self.menuOpt['tamanho'].index(self.optValue['tamanho'].get()) # int
+        data['cor'] = self.menuOpt['cor'].index(self.optValue['cor'].get()) # int
+        data['local_queda'] = self.optValue['local_queda'].get() # text
+        data['combustivel'] = self.optValue['combustiveis'].get() # text
+        data['trip_sobrevivente'] = int(self.optValue['qtdSobrevivente'].get()) # int
+        data['trip_estado'] = self.optValue['trip_estado'].get() # text
+        data['avaria'] = self.menuOpt['avaria'].index(self.optValue['avaria'].get()) # int
+        data['potencial'] = self.menuOpt['potencial'].index(self.optValue['potencial'].get()) # int
+        data['periculosidade'] = self.menuOpt['periculosidade'].index(self.optValue['periculosidade'].get()) # int
 
-                for i in selection:
-                    entrada = self.armamento.get(i)
-                    reslist.append(entrada)
-                    
-                    index = self.menuOpt['armas'].index(entrada)
-                    combinacaoValor += 2**index
-                print(f"Armas: {reslist}; Combinacao: {combinacaoValor}")
-            elif (k == 'qtdSobreviventes'):
-                data['tripulacao_sobrevivente'] = int(v.get())
-            else:
-                print(f"{k}: {v.get()}")
-                data[k] = self.menuOpt[k].index(v.get())
+        reslist = list()
+        combinacaoValor = 0
+        selectionArmas = self.armamento.curselection()
+
+        if (len(selectionArmas) != 0):
+            for i in selectionArmas:
+                entrada = self.armamento.get(i)
+                reslist.append(entrada)
+                
+                indexArmas = self.menuOpt['armas'].index(entrada)
+                combinacaoValor += 2**indexArmas
+        combinacaoValor += 256 * self.menuOpt['poderio'].index(self.optValue['poderio'].get())
+
+        data['armamento'] = combinacaoValor # int
+
+        self.registro.inserir(data)
     
     # show functions
     def showMain(self):

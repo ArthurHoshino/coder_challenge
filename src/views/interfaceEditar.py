@@ -5,9 +5,9 @@ from tkinter import messagebox
 from src.classes.Registro import Registro
 
 class InterfaceRegistro(ttk.Frame):
-    def __init__(self, parent, showMain):
+    def __init__(self, parent, showListarNaves):
         super().__init__(parent)
-        self.showMain = showMain
+        self.showListarNaves = showListarNaves
 
         self.registro = Registro()
 
@@ -85,7 +85,7 @@ class InterfaceRegistro(ttk.Frame):
     
     def registrar(self):
         data = {}
-        data['nome'] = self.optValue['nome'].get()
+        data['nome'] = self.menuOpt['nome'].get()
         data['tamanho'] = self.menuOpt['tamanho'].index(self.optValue['tamanho'].get()) # int
         data['cor'] = self.menuOpt['cor'].index(self.optValue['cor'].get()) # int
         data['local_queda'] = self.optValue['local_queda'].get() # text
@@ -190,5 +190,3 @@ class InterfaceRegistro(ttk.Frame):
         self.buttom.grid_forget()
         self.buttomVoltar.grid_forget()
         self.place_forget()
-    
- 

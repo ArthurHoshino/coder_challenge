@@ -2,9 +2,10 @@ import tkinter as tk
 from tkinter import ttk
 
 class InterfaceMain(ttk.Frame):
-    def __init__(self, parent, showRegistro):
+    def __init__(self, parent, showRegistro, showListarNaves):
         super().__init__(parent)
         self.showRegistro = showRegistro
+        self.showListarNaves = showListarNaves
 
         self.buttonRegistro = None
         self.buttonVisualizar = None
@@ -13,7 +14,7 @@ class InterfaceMain(ttk.Frame):
         # criar componentes
         self.place( relx=0.5, rely=0.2, relwidth=0.5, relheight=0.2, anchor='center' )
         self.buttonRegistro = ttk.Button(self, text="Registrar nave", command=self.showRegistro)
-        self.buttonVisualizar = ttk.Button(self, text="Visualizar naves")
+        self.buttonVisualizar = ttk.Button(self, text="Visualizar naves", command=self.showListarNaves)
 
         # colocar na tela
         self.columnconfigure((0, 1, 2, 3), weight=1, uniform='a')

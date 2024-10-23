@@ -5,14 +5,16 @@ from tkinter import messagebox
 from src.classes.Registro import Registro
 
 class InterfaceRegistro(ttk.Frame):
-    def __init__(self, parent, showMain):
+    def __init__(self, parent, showListarNaves, showEditar, naveId):
         super().__init__(parent)
-        self.showMain = showMain
+        self.showListarNaves = showListarNaves
+        self.showEditar = showEditar
+        self.naveId = naveId
 
         self.registro = Registro()
 
         # opcoes para registro
-        self.menuOpt = {}
+        self.armasOpt = []
         self.optValue = {
             "nome": tk.StringVar(self),
             "tamanho": tk.StringVar(self),
@@ -25,7 +27,8 @@ class InterfaceRegistro(ttk.Frame):
             "trip_estado": tk.StringVar(self),
             "avaria": tk.StringVar(self),
             "potencial": tk.StringVar(self),
-            "periculosidade": tk.StringVar(self)
+            "periculosidade": tk.StringVar(self),
+            "classificacao": tk.StringVar(self)
         }
 
         # registro
@@ -34,39 +37,72 @@ class InterfaceRegistro(ttk.Frame):
         self.nomeLabel = ttk.Label(self, text="Nome da nave", font=('Comic Sans MS', 12))
         self.nome = ttk.Entry(self, textvariable=self.optValue['nome'])
         self.tamanhoLabel = ttk.Label(self, text="Tamanho da nave", font=('Comic Sans MS', 12))
-        self.tamanho = ttk.OptionMenu(self, self.optValue['tamanho'], self.menuOpt['tamanho'][0], *self.menuOpt['tamanho'])
+        self.tamanho = ttk.Entry(self, textvariable=self.optValue['tamanho'])
         self.corLabel = ttk.Label(self, text="Cor da nave", font=('Comic Sans MS', 12))
-        self.cor = ttk.OptionMenu(self, self.optValue['cor'], self.menuOpt['cor'][0], *self.menuOpt['cor'])
+        self.cor = ttk.Entry(self, textvariable=self.optValue['cor'])
         self.localLabel = ttk.Label(self, text="Local da queda", font=('Comic Sans MS', 12))
-        self.local = ttk.OptionMenu(self, self.optValue['local_queda'], self.menuOpt['local_queda'][0], *self.menuOpt['local_queda'])
+        self.local = ttk.Entry(self, textvariable=self.optValue['local_queda'])
         self.poderLabel = ttk.Label(self, text="Poderio bélico", font=('Comic Sans MS', 12))
-        self.poder = ttk.OptionMenu(self, self.optValue['poderio'], self.menuOpt['poderio'][0], *self.menuOpt['poderio'])
+        self.poder = ttk.Entry(self, textvariable=self.optValue['poderio'])
         self.armamentoLabel = ttk.Label(self, text="Armamento", font=('Comic Sans MS', 12))
         self.armamento = tk.Listbox(self, self.optValue['armas'], selectmode="multiple", exportselection=0)
-        for item in self.menuOpt['armas']:
-            self.armamento.insert(self.menuOpt['armas'].index(item), item)
+        for item in self.armasOpt:
+            self.armamento.insert(self.armasOpt.index(item), item)
 
         self.combustivelLabel = ttk.Label(self, text="Combustível", font=('Comic Sans MS', 12))
-        self.combustivel = ttk.OptionMenu(self, self.optValue['combustiveis'], self.menuOpt['combustiveis'][0], *self.menuOpt['combustiveis'])
+        self.combustivel = ttk.Entry(self, textvariable=self.optValue['combustiveis'])
         self.qtdSobreviventeLabel = ttk.Label(self, text="Número de sobreviventes", font=('Comic Sans MS', 12))
-        self.qtdSobrevivente = ttk.Entry(self, textvariable=self.optValue['qtdSobrevivente'], validate='all', validatecommand=(self.vcmd, '%P'))
+        self.qtdSobrevivente = ttk.Entry(self, textvariable=self.optValue['qtdSobrevivente'])
         self.estadoSobreviventeLabel = ttk.Label(self, text="Estado dos sobreviventes", font=('Comic Sans MS', 12))
-        self.estadoSobrevivente = ttk.OptionMenu(self, self.optValue['trip_estado'], self.menuOpt['trip_estado'][0], *self.menuOpt['trip_estado'])
+        self.estadoSobrevivente = ttk.Entry(self, textvariable=self.optValue['trip_estado'])
         self.avariaLabel = ttk.Label(self, text="Grau de avaria", font=('Comic Sans MS', 12))
-        self.avaria = ttk.OptionMenu(self, self.optValue['avaria'], self.menuOpt['avaria'][0], *self.menuOpt['avaria'])
+        self.avaria = ttk.Entry(self, textvariable=self.optValue['avaria'])
         self.potencialLabel = ttk.Label(self, text="Potencial de prospecção tecnológica", font=('Comic Sans MS', 12))
-        self.potencial = ttk.OptionMenu(self, self.optValue['potencial'], self.menuOpt['potencial'][0], *self.menuOpt['potencial'])
+        self.potencial = ttk.Entry(self, textvariable=self.optValue['potencial'])
         self.periculosidadeLabel = ttk.Label(self, text="Grau de periculosidade", font=('Comic Sans MS', 12))
-        self.periculosidade = ttk.OptionMenu(self, self.optValue['periculosidade'], self.menuOpt['periculosidade'][0], *self.menuOpt['periculosidade'])
+        self.periculosidade = ttk.Entry(self, textvariable=self.optValue['periculosidade'])
+        self.classificacaoLabel = ttk.Label(self, text="Classificação", font=('Comic Sans MS', 12))
+        self.classificacao = ttk.Entry(self, textvariable=self.optValue['classificacao'])
 
         self.buttomVoltar = ttk.Button(self, text="Voltar", command=self.showMain)
-        self.buttom = ttk.Button(self, text="Enviar", command=self.registrar)
+        self.buttom = ttk.Button(self, text="Editar")
+
+        self.nome.configure(state='disable')
+        self.tamanho.configure(state='disable')
+        self.cor.configure(state='disable')
+        self.local.configure(state='disable')
+        self.poder.configure(state='disable')
+        self.armamento.configure(state='disable')
+        self.combustivel.configure(state='disable')
+        self.qtdSobrevivente.configure(state='disable')
+        self.estadoSobrevivente.configure(state='disable')
+        self.avaria.configure(state='disable')
+        self.potencial.configure(state='disable')
+        self.periculosidade.configure(state='disable')
+        self.classificacao.configure(state='disable')
     
-    def validate(self, P):
-        if str.isdigit(P) or P == "":
-            return True
-        else:
-            return False
+    def getInfo(self):
+        with open("src/options.json", "r", encoding='utf-8') as f:
+            allOpt = json.load(f)
+        response = self.registro.getNaveById(self.naveId)
+
+        self.nome.insert(response[1])
+        self.tamanho.insert(allOpt[response[2]])
+        self.cor.insert(allOpt[response[3]])
+        self.local.insert(response[4])
+        self.poder.insert( allOpt[ response[5] // 256 ] )
+        # logica das armas selecionadas
+        armasSelecionadas = format((response[5] % 256), 'b')[::-1]
+        for arma in armasSelecionadas:
+            print(arma)
+
+        self.combustivel.insert(response[6])
+        self.qtdSobrevivente.insert(response[7])
+        self.estadoSobrevivente.insert(response[8])
+        self.avaria.insert(allOpt[response[9]])
+        self.potencial.insert(allOpt[response[10]])
+        self.periculosidade.insert(allOpt[response[11]])
+        self.classificacao.insert(response[12])
     
     def resetValues(self):
         self.optValue = {
@@ -82,50 +118,7 @@ class InterfaceRegistro(ttk.Frame):
             "potencial": tk.StringVar(self),
             "periculosidade": tk.StringVar(self)
         }
-    
-    def registrar(self):
-        data = {}
-        data['nome'] = self.optValue['nome'].get()
-        data['tamanho'] = self.menuOpt['tamanho'].index(self.optValue['tamanho'].get()) # int
-        data['cor'] = self.menuOpt['cor'].index(self.optValue['cor'].get()) # int
-        data['local_queda'] = self.optValue['local_queda'].get() # text
-        data['combustivel'] = self.optValue['combustiveis'].get() # text
-        if (self.optValue['qtdSobrevivente'].get() == ''):
-            data['trip_sobrevivente'] = 0
-        else:
-            data['trip_sobrevivente'] = int(self.optValue['qtdSobrevivente'].get()) # int
-        data['trip_estado'] = self.optValue['trip_estado'].get() # text
-        data['avaria'] = self.menuOpt['avaria'].index(self.optValue['avaria'].get()) # int
-        data['potencial'] = self.menuOpt['potencial'].index(self.optValue['potencial'].get()) # int
-        data['periculosidade'] = self.menuOpt['periculosidade'].index(self.optValue['periculosidade'].get()) # int
-
-        reslist = list()
-        combinacaoValor = 0
-        selectionArmas = self.armamento.curselection()
-
-        if (len(selectionArmas) != 0):
-            for i in selectionArmas:
-                entrada = self.armamento.get(i)
-                reslist.append(entrada)
-                
-                indexArmas = self.menuOpt['armas'].index(entrada)
-                combinacaoValor += 2**indexArmas
-        combinacaoValor += 256 * self.menuOpt['poderio'].index(self.optValue['poderio'].get())
-
-        data['armamento'] = combinacaoValor # int
-
-        response = self.registro.inserir(data)
-        if (response == 200):
-            messagebox.showinfo("Sucesso", "Nave registrada com sucesso")
-        else:
-            messagebox.showerror("Ops!", "Algo deu errado =(")
         
-        self.resetValues()
-        self.showMain()
-    
-    def getInfo(self):
-        with open("src/options.json", "r", encoding='utf-8') as f:
-            self.menuOpt = json.load(f)
 
     def show(self):
         self.place(relx=0.5, rely=0.5, relwidth=0.95, relheight=0.95, anchor='center')
@@ -190,5 +183,3 @@ class InterfaceRegistro(ttk.Frame):
         self.buttom.grid_forget()
         self.buttomVoltar.grid_forget()
         self.place_forget()
-    
- 

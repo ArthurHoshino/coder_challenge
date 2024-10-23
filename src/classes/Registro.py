@@ -47,32 +47,35 @@ class Registro:
     def inserir(self, data: dict):
         with closing(sqlite3.connect("coderchallenge.db")) as connection:
             with closing(connection.cursor()) as cursor:
-                cursor.execute("""
-                    INTERT INTO naves (
-                        tamanho,
-                        cor,
-                        local_queda,
-                        armamento,
-                        combustivel,
-                        tripulacao_sobrevivente,
-                        tripulacao_estado,
-                        avaria,
-                        potencial_tech,
-                        grau_periculosidade,
-                        classificacao
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (data['tamanho'],
-                    data['cor'],
-                    data['local_queda'],
-                    data['armamento'],
-                    data['combustivel'],
-                    data['trip_sobrevivente'],
-                    data['trip_estado'],
-                    data['avaria'],
-                    data['potencial'],
-                    data['periculosidade'],
-                    "Classificacao Placeholder"
-                ))
+                try:
+                    cursor.execute("""
+                        INSERT INTO naves (
+                            tamanho,
+                            cor,
+                            local_queda,
+                            armamento,
+                            combustivel,
+                            tripulacao_sobrevivente,
+                            tripulacao_estado,
+                            avaria,
+                            potencial_tech,
+                            grau_periculosidade,
+                            classificacao
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (data['tamanho'],
+                        data['cor'],
+                        data['local_queda'],
+                        data['armamento'],
+                        data['combustivel'],
+                        data['trip_sobrevivente'],
+                        data['trip_estado'],
+                        data['avaria'],
+                        data['potencial'],
+                        data['periculosidade'],
+                        "Classificacao Placeholder"
+                    ))
+                except Exception as e:
+                    print(e)
         
     def gerarClassificacao(self, data: dict):
         pass

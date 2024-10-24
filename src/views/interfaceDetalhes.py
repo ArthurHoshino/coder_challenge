@@ -4,121 +4,139 @@ from tkinter import ttk
 from tkinter import messagebox
 from src.classes.Registro import Registro
 
-class InterfaceRegistro(ttk.Frame):
-    def __init__(self, parent, showListarNaves, showEditar, naveId):
+class InterfaceDetalhes(ttk.Frame):
+    def __init__(self, parent, showListarNaves, showEditar):
         super().__init__(parent)
         self.showListarNaves = showListarNaves
         self.showEditar = showEditar
-        self.naveId = naveId
-
         self.registro = Registro()
 
+        self.toggle = True
+        self.naveId = 0
+
         # opcoes para registro
+        self.menuOpt = {}
         self.armasOpt = []
-        self.optValue = {
-            "nome": tk.StringVar(self),
-            "tamanho": tk.StringVar(self),
-            "cor": tk.StringVar(self),
-            "local_queda": tk.StringVar(self),
-            "poderio": tk.StringVar(self),
-            "armas": list(),
-            "combustiveis": tk.StringVar(self),
-            "qtdSobrevivente": tk.StringVar(self),
-            "trip_estado": tk.StringVar(self),
-            "avaria": tk.StringVar(self),
-            "potencial": tk.StringVar(self),
-            "periculosidade": tk.StringVar(self),
-            "classificacao": tk.StringVar(self)
-        }
+
+        self.getInfo()
 
         # registro
-        self.vcmd = (self.register(self.validate))
-        self.getInfo()
         self.nomeLabel = ttk.Label(self, text="Nome da nave", font=('Comic Sans MS', 12))
-        self.nome = ttk.Entry(self, textvariable=self.optValue['nome'])
+        self.nome = ttk.Entry(self)
         self.tamanhoLabel = ttk.Label(self, text="Tamanho da nave", font=('Comic Sans MS', 12))
-        self.tamanho = ttk.Entry(self, textvariable=self.optValue['tamanho'])
+        self.tamanho = ttk.Entry(self)
         self.corLabel = ttk.Label(self, text="Cor da nave", font=('Comic Sans MS', 12))
-        self.cor = ttk.Entry(self, textvariable=self.optValue['cor'])
+        self.cor = ttk.Entry(self)
         self.localLabel = ttk.Label(self, text="Local da queda", font=('Comic Sans MS', 12))
-        self.local = ttk.Entry(self, textvariable=self.optValue['local_queda'])
+        self.local = ttk.Entry(self)
         self.poderLabel = ttk.Label(self, text="Poderio bélico", font=('Comic Sans MS', 12))
-        self.poder = ttk.Entry(self, textvariable=self.optValue['poderio'])
+        self.poder = ttk.Entry(self)
         self.armamentoLabel = ttk.Label(self, text="Armamento", font=('Comic Sans MS', 12))
-        self.armamento = tk.Listbox(self, self.optValue['armas'], selectmode="multiple", exportselection=0)
-        for item in self.armasOpt:
-            self.armamento.insert(self.armasOpt.index(item), item)
-
+        self.armamento = tk.Listbox(self)
         self.combustivelLabel = ttk.Label(self, text="Combustível", font=('Comic Sans MS', 12))
-        self.combustivel = ttk.Entry(self, textvariable=self.optValue['combustiveis'])
+        self.combustivel = ttk.Entry(self)
         self.qtdSobreviventeLabel = ttk.Label(self, text="Número de sobreviventes", font=('Comic Sans MS', 12))
-        self.qtdSobrevivente = ttk.Entry(self, textvariable=self.optValue['qtdSobrevivente'])
+        self.qtdSobrevivente = ttk.Entry(self)
         self.estadoSobreviventeLabel = ttk.Label(self, text="Estado dos sobreviventes", font=('Comic Sans MS', 12))
-        self.estadoSobrevivente = ttk.Entry(self, textvariable=self.optValue['trip_estado'])
+        self.estadoSobrevivente = ttk.Entry(self)
         self.avariaLabel = ttk.Label(self, text="Grau de avaria", font=('Comic Sans MS', 12))
-        self.avaria = ttk.Entry(self, textvariable=self.optValue['avaria'])
+        self.avaria = ttk.Entry(self)
         self.potencialLabel = ttk.Label(self, text="Potencial de prospecção tecnológica", font=('Comic Sans MS', 12))
-        self.potencial = ttk.Entry(self, textvariable=self.optValue['potencial'])
+        self.potencial = ttk.Entry(self)
         self.periculosidadeLabel = ttk.Label(self, text="Grau de periculosidade", font=('Comic Sans MS', 12))
-        self.periculosidade = ttk.Entry(self, textvariable=self.optValue['periculosidade'])
+        self.periculosidade = ttk.Entry(self)
         self.classificacaoLabel = ttk.Label(self, text="Classificação", font=('Comic Sans MS', 12))
-        self.classificacao = ttk.Entry(self, textvariable=self.optValue['classificacao'])
+        self.classificacao = ttk.Entry(self)
 
-        self.buttomVoltar = ttk.Button(self, text="Voltar", command=self.showMain)
-        self.buttom = ttk.Button(self, text="Editar")
+        self.buttonVoltar = ttk.Button(self, text="Voltar", command=self.showListarNaves)
+        self.button = ttk.Button(self, text="Editar Informações", command=self.buscarNave)
+        self.buttonDeletar = ttk.Button(self, text='Deletar Registro', command=self.deletarNave)
 
-        self.nome.configure(state='disable')
-        self.tamanho.configure(state='disable')
-        self.cor.configure(state='disable')
-        self.local.configure(state='disable')
-        self.poder.configure(state='disable')
-        self.armamento.configure(state='disable')
-        self.combustivel.configure(state='disable')
-        self.qtdSobrevivente.configure(state='disable')
-        self.estadoSobrevivente.configure(state='disable')
-        self.avaria.configure(state='disable')
-        self.potencial.configure(state='disable')
-        self.periculosidade.configure(state='disable')
-        self.classificacao.configure(state='disable')
+    def deletarNave(self):
+        resposta = messagebox.askyesno(title='ATENÇÃO', message='Tem certeza de que deseja excluir esse registro?')
+        if (resposta):
+            messagebox.showinfo("Sucesso", "Registro excluído com sucesso!")
+            self.showListarNaves()        
+
+    def toggleItems(self):
+        estado = 'disable' if self.toggle else 'normal'
+        self.nome.configure(state=estado)
+        self.tamanho.configure(state=estado)
+        self.cor.configure(state=estado)
+        self.local.configure(state=estado)
+        self.poder.configure(state=estado)
+        self.armamento.configure(state=estado)
+        self.combustivel.configure(state=estado)
+        self.qtdSobrevivente.configure(state=estado)
+        self.estadoSobrevivente.configure(state=estado)
+        self.avaria.configure(state=estado)
+        self.potencial.configure(state=estado)
+        self.periculosidade.configure(state=estado)
+        self.classificacao.configure(state=estado)
+
+        self.toggle = True
+    
+    def buscarNave(self):
+        self.showEditar(self.naveId)
     
     def getInfo(self):
         with open("src/options.json", "r", encoding='utf-8') as f:
-            allOpt = json.load(f)
+            self.menuOpt = json.load(f)
+    
+    def setInfo(self, naveId: int = 0):
+        # habilitar os campos
+        if (naveId != 0):
+            self.naveId = naveId
+        self.toggle = False
+        self.toggleItems()
+
+        # limpar os campos
+        self.resetValues()
+
         response = self.registro.getNaveById(self.naveId)
 
-        self.nome.insert(response[1])
-        self.tamanho.insert(allOpt[response[2]])
-        self.cor.insert(allOpt[response[3]])
-        self.local.insert(response[4])
-        self.poder.insert( allOpt[ response[5] // 256 ] )
-        # logica das armas selecionadas
-        armasSelecionadas = format((response[5] % 256), 'b')[::-1]
-        for arma in armasSelecionadas:
-            print(arma)
+        self.nome.insert(0, response[0][1])
+        self.tamanho.insert(0, self.menuOpt['tamanho'][response[0][2]])
+        self.cor.insert(0, self.menuOpt['cor'][response[0][3]])
+        self.local.insert(0, response[0][4])
+        self.poder.insert(0,  self.menuOpt['poderio'][ response[0][5] // 256 ] )
 
-        self.combustivel.insert(response[6])
-        self.qtdSobrevivente.insert(response[7])
-        self.estadoSobrevivente.insert(response[8])
-        self.avaria.insert(allOpt[response[9]])
-        self.potencial.insert(allOpt[response[10]])
-        self.periculosidade.insert(allOpt[response[11]])
-        self.classificacao.insert(response[12])
+        # logica das armas selecionadas
+        armasSelecionadas = format((response[0][5] % 256), 'b')[::-1]
+        contador = 0
+        for arma in armasSelecionadas:
+            if (arma == '1'):
+                self.armasOpt.append(self.menuOpt['armas'][contador])
+            contador += 1
+        for item in self.armasOpt:
+            self.armamento.insert(self.armasOpt.index(item), item)
+
+        self.combustivel.insert(0, response[0][6])
+        self.qtdSobrevivente.insert(0, response[0][7])
+        self.estadoSobrevivente.insert(0, response[0][8])
+        self.avaria.insert(0, self.menuOpt['avaria'][response[0][9]])
+        self.potencial.insert(0, self.menuOpt['potencial'][response[0][10]])
+        self.periculosidade.insert(0, self.menuOpt['periculosidade'][response[0][11]])
+        self.classificacao.insert(0, response[0][12])
+
+        # desabilitar campos
+        self.toggleItems()
     
     def resetValues(self):
-        self.optValue = {
-            "tamanho": tk.StringVar(self),
-            "cor": tk.StringVar(self),
-            "local_queda": tk.StringVar(self),
-            "poderio": tk.StringVar(self),
-            "armas": list(),
-            "combustiveis": tk.StringVar(self),
-            "qtdSobrevivente": tk.StringVar(self),
-            "trip_estado": tk.StringVar(self),
-            "avaria": tk.StringVar(self),
-            "potencial": tk.StringVar(self),
-            "periculosidade": tk.StringVar(self)
-        }
-        
+        self.nome.delete(0, tk.END)
+        self.tamanho.delete(0, tk.END)
+        self.cor.delete(0, tk.END)
+        self.local.delete(0, tk.END)
+        self.poder.delete(0, tk.END)
+        self.armamento.delete(0, tk.END)
+        self.armasOpt = []
+        self.combustivel.delete(0, tk.END)
+        self.qtdSobrevivente.delete(0, tk.END)
+        self.estadoSobrevivente.delete(0, tk.END)
+        self.avaria.delete(0, tk.END)
+        self.potencial.delete(0, tk.END)
+        self.periculosidade.delete(0, tk.END)
+        self.classificacao.delete(0, tk.END)
 
     def show(self):
         self.place(relx=0.5, rely=0.5, relwidth=0.95, relheight=0.95, anchor='center')
@@ -151,9 +169,12 @@ class InterfaceRegistro(ttk.Frame):
         self.periculosidade.grid(row=4, column=3, padx=10, pady=20, sticky='nsew')
         self.combustivelLabel.grid(row=5, column=2, padx=10, pady=20, sticky='nsew')
         self.combustivel.grid(row=5, column=3, padx=10, pady=20, sticky='nsew')
+        self.classificacaoLabel.grid(row=6, column=2, padx=10, pady=20, sticky='nsew')
+        self.classificacao.grid(row=6, column=3, padx=10, pady=20, sticky='nsew')
 
-        self.buttomVoltar.grid(row=7, column=0, padx=20, pady=20, sticky='nsew', columnspan=2)
-        self.buttom.grid(row=7, column=2, padx=20, pady=20, sticky='nsew', columnspan=2)
+        self.buttonVoltar.grid(row=7, column=0, padx=20, pady=20, sticky='nsew')
+        self.button.grid(row=7, column=1, padx=20, pady=20, sticky='nsew', columnspan=2)
+        self.buttonDeletar.grid(row=7, column=3, padx=20, pady=20, sticky='nsew')
     
     def hide(self):
         self.nomeLabel.grid_forget()
@@ -180,6 +201,9 @@ class InterfaceRegistro(ttk.Frame):
         self.potencial.grid_forget()
         self.periculosidadeLabel.grid_forget()
         self.periculosidade.grid_forget()
-        self.buttom.grid_forget()
-        self.buttomVoltar.grid_forget()
+        self.classificacaoLabel.grid_forget()
+        self.classificacao.grid_forget()
+        self.button.grid_forget()
+        self.buttonVoltar.grid_forget()
+        self.buttonDeletar.grid_forget()
         self.place_forget()

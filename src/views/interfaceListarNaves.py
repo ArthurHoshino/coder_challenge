@@ -3,11 +3,11 @@ from tkinter import ttk
 from src.classes.Registro import Registro
 
 class InterfaceListarNaves(ttk.Frame):
-    def __init__(self, parent, showMain, showDetalhes = ""):
+    def __init__(self, parent, showMain, showDetalhes):
         super().__init__(parent)
         self.registro = Registro()
         self.showMain = showMain
-        self.showDetalhes = showDetalhes # adicionar isso
+        self.showDetalhes = showDetalhes
         self.rows = list()
         self.navesNomes = list()
         self.opt = tk.StringVar(self)
@@ -27,8 +27,9 @@ class InterfaceListarNaves(ttk.Frame):
                 self.navesNomes.append(item[1])
             
             self.lista = ttk.OptionMenu(self, self.opt, self.navesNomes[0], *self.navesNomes)
-        else:
-            self.navesNomes = ['Placeholder']
+            return True
+        self.navesNomes = ['placeholder']
+        return False
     
     def buscarNave(self):
         naveSelecionada = self.opt.get()
@@ -37,7 +38,7 @@ class InterfaceListarNaves(ttk.Frame):
             if (item[1] == naveSelecionada):
                 naveId = item[0]
             
-        response = self.registro.getNaveById(naveId)
+        self.showDetalhes(naveId)
 
     def show(self):
         self.place(relx=0.5, rely=0.5, relwidth=0.5, relheight=0.5, anchor='center')

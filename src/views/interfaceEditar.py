@@ -3,23 +3,26 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from src.classes.Registro import Registro
+import logging
 
-class InterfaceRegistro(ttk.Frame):
-    def __init__(self, parent, showListarNaves):
+class InterfaceEditar(ttk.Frame):
+    def __init__(self, parent, showListarNaves, showDetalhes):
         super().__init__(parent)
         self.showListarNaves = showListarNaves
-
+        self.showDetalhes = showDetalhes
         self.registro = Registro()
+
+        self.naveId = 0
 
         # opcoes para registro
         self.menuOpt = {}
+        self.optSelecionado = {}
         self.optValue = {
             "nome": tk.StringVar(self),
             "tamanho": tk.StringVar(self),
             "cor": tk.StringVar(self),
             "local_queda": tk.StringVar(self),
             "poderio": tk.StringVar(self),
-            "armas": list(),
             "combustiveis": tk.StringVar(self),
             "qtdSobrevivente": tk.StringVar(self),
             "trip_estado": tk.StringVar(self),
@@ -42,7 +45,7 @@ class InterfaceRegistro(ttk.Frame):
         self.poderLabel = ttk.Label(self, text="Poderio bélico", font=('Comic Sans MS', 12))
         self.poder = ttk.OptionMenu(self, self.optValue['poderio'], self.menuOpt['poderio'][0], *self.menuOpt['poderio'])
         self.armamentoLabel = ttk.Label(self, text="Armamento", font=('Comic Sans MS', 12))
-        self.armamento = tk.Listbox(self, self.optValue['armas'], selectmode="multiple", exportselection=0)
+        self.armamento = tk.Listbox(self, selectmode="multiple", exportselection=0)
         for item in self.menuOpt['armas']:
             self.armamento.insert(self.menuOpt['armas'].index(item), item)
 
@@ -59,33 +62,19 @@ class InterfaceRegistro(ttk.Frame):
         self.periculosidadeLabel = ttk.Label(self, text="Grau de periculosidade", font=('Comic Sans MS', 12))
         self.periculosidade = ttk.OptionMenu(self, self.optValue['periculosidade'], self.menuOpt['periculosidade'][0], *self.menuOpt['periculosidade'])
 
-        self.buttomVoltar = ttk.Button(self, text="Voltar", command=self.showMain)
-        self.buttom = ttk.Button(self, text="Enviar", command=self.registrar)
+        self.buttonVoltar = ttk.Button(self, text="Voltar", command=self.showDetalhes)
+        self.button = ttk.Button(self, text="Salvar", command=self.salvarAlteracao)
     
     def validate(self, P):
         if str.isdigit(P) or P == "":
             return True
         else:
             return False
-    
-    def resetValues(self):
-        self.optValue = {
-            "tamanho": tk.StringVar(self),
-            "cor": tk.StringVar(self),
-            "local_queda": tk.StringVar(self),
-            "poderio": tk.StringVar(self),
-            "armas": list(),
-            "combustiveis": tk.StringVar(self),
-            "qtdSobrevivente": tk.StringVar(self),
-            "trip_estado": tk.StringVar(self),
-            "avaria": tk.StringVar(self),
-            "potencial": tk.StringVar(self),
-            "periculosidade": tk.StringVar(self)
-        }
-    
-    def registrar(self):
+
+    def salvarAlteracao(self):
         data = {}
-        data['nome'] = self.menuOpt['nome'].get()
+        data['id'] = self.naveId
+        data['nome'] = self.optValue['nome'].get()
         data['tamanho'] = self.menuOpt['tamanho'].index(self.optValue['tamanho'].get()) # int
         data['cor'] = self.menuOpt['cor'].index(self.optValue['cor'].get()) # int
         data['local_queda'] = self.optValue['local_queda'].get() # text
@@ -114,18 +103,63 @@ class InterfaceRegistro(ttk.Frame):
 
         data['armamento'] = combinacaoValor # int
 
-        response = self.registro.inserir(data)
+        response = self.registro.editar(data)
         if (response == 200):
-            messagebox.showinfo("Sucesso", "Nave registrada com sucesso")
+            messagebox.showinfo("Sucesso", "Nave atualizada com sucesso")
         else:
             messagebox.showerror("Ops!", "Algo deu errado =(")
         
-        self.resetValues()
-        self.showMain()
+        self.showListarNaves()
     
     def getInfo(self):
         with open("src/options.json", "r", encoding='utf-8') as f:
             self.menuOpt = json.load(f)
+        
+    def setInfo(self, naveId):
+        # limpar os campos
+        self.resetValues()
+        self.naveId = naveId
+
+        response = self.registro.getNaveById(self.naveId)
+
+        # DEFINIR OS VALORES DAS VARIAVEIS DE CADA CAMPO
+        self.optValue['nome'].set(response[0][1])
+        self.optValue['tamanho'].set(self.menuOpt['tamanho'][response[0][2]])
+        self.optValue['cor'].set(self.menuOpt['cor'][response[0][3]])
+        self.optValue['local_queda'].set(self.menuOpt['local_queda'][self.menuOpt['local_queda'].index(response[0][4])])
+        self.optValue['poderio'].set(self.menuOpt['poderio'][response[0][5] // 256])
+        self.optValue['combustiveis'].set(self.menuOpt['combustiveis'][self.menuOpt['combustiveis'].index(response[0][6])])
+        self.optValue['qtdSobrevivente'].set(response[0][7])
+        self.optValue['trip_estado'].set(self.menuOpt['trip_estado'][self.menuOpt['trip_estado'].index(response[0][8])])
+        self.optValue['avaria'].set(self.menuOpt['avaria'][response[0][9]])
+        self.optValue['potencial'].set(self.menuOpt['potencial'][response[0][10]])
+        self.optValue['periculosidade'].set(self.menuOpt['periculosidade'][response[0][11]])
+
+        # DEFINIR OS VALORES DOS CAMPOS
+        # self.nome.insert(0, response[0][1])
+        self.tamanho.set_menu(self.menuOpt['tamanho'][response[0][2]], *self.menuOpt['tamanho'])
+        self.cor.set_menu(self.menuOpt['cor'][response[0][3]], *self.menuOpt['cor'])
+        self.local.set_menu(self.menuOpt['local_queda'][self.menuOpt['local_queda'].index(response[0][4])], *self.menuOpt['local_queda'])
+        self.poder.set_menu(self.menuOpt['poderio'][response[0][5] // 256], *self.menuOpt['poderio'])
+
+        # logica das armas selecionadas
+        armasSelecionadas = format((response[0][5] % 256), 'b')[::-1]
+        contador = 0
+        for arma in armasSelecionadas:
+            if (arma == '1'):
+                self.armamento.select_set(contador)
+            contador += 1
+
+        self.combustivel.set_menu(self.menuOpt['combustiveis'][self.menuOpt['combustiveis'].index(response[0][6])], *self.menuOpt['combustiveis'])
+        # self.qtdSobrevivente.insert(0, response[0][7])
+        self.estadoSobrevivente.set_menu(self.menuOpt['trip_estado'][self.menuOpt['trip_estado'].index(response[0][8])], *self.menuOpt['trip_estado'])
+        self.avaria.set_menu(self.menuOpt['avaria'][response[0][9]], *self.menuOpt['avaria'])
+        self.potencial.set_menu(self.menuOpt['potencial'][response[0][10]], *self.menuOpt['potencial'])
+        self.periculosidade.set_menu(self.menuOpt['periculosidade'][response[0][11]], *self.menuOpt['periculosidade'])
+    
+    def resetValues(self):
+        self.nome.delete(0, tk.END)
+        self.qtdSobrevivente.delete(0, tk.END)
 
     def show(self):
         self.place(relx=0.5, rely=0.5, relwidth=0.95, relheight=0.95, anchor='center')
@@ -159,8 +193,8 @@ class InterfaceRegistro(ttk.Frame):
         self.combustivelLabel.grid(row=5, column=2, padx=10, pady=20, sticky='nsew')
         self.combustivel.grid(row=5, column=3, padx=10, pady=20, sticky='nsew')
 
-        self.buttomVoltar.grid(row=7, column=0, padx=20, pady=20, sticky='nsew', columnspan=2)
-        self.buttom.grid(row=7, column=2, padx=20, pady=20, sticky='nsew', columnspan=2)
+        self.buttonVoltar.grid(row=7, column=0, padx=20, pady=20, sticky='nsew', columnspan=2)
+        self.button.grid(row=7, column=2, padx=20, pady=20, sticky='nsew', columnspan=2)
     
     def hide(self):
         self.nomeLabel.grid_forget()
@@ -187,6 +221,6 @@ class InterfaceRegistro(ttk.Frame):
         self.potencial.grid_forget()
         self.periculosidadeLabel.grid_forget()
         self.periculosidade.grid_forget()
-        self.buttom.grid_forget()
-        self.buttomVoltar.grid_forget()
+        self.button.grid_forget()
+        self.buttonVoltar.grid_forget()
         self.place_forget()

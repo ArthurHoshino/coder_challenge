@@ -59,8 +59,8 @@ class InterfaceRegistro(ttk.Frame):
         self.periculosidadeLabel = ttk.Label(self, text="Grau de periculosidade", font=('Comic Sans MS', 12))
         self.periculosidade = ttk.OptionMenu(self, self.optValue['periculosidade'], self.menuOpt['periculosidade'][0], *self.menuOpt['periculosidade'])
 
-        self.buttomVoltar = ttk.Button(self, text="Voltar", command=self.showMain)
-        self.buttom = ttk.Button(self, text="Enviar", command=self.registrar)
+        self.buttonVoltar = ttk.Button(self, text="Voltar", command=self.showMain)
+        self.button = ttk.Button(self, text="Enviar", command=self.registrar)
     
     def validate(self, P):
         if str.isdigit(P) or P == "":
@@ -159,8 +159,8 @@ class InterfaceRegistro(ttk.Frame):
         self.combustivelLabel.grid(row=5, column=2, padx=10, pady=20, sticky='nsew')
         self.combustivel.grid(row=5, column=3, padx=10, pady=20, sticky='nsew')
 
-        self.buttomVoltar.grid(row=7, column=0, padx=20, pady=20, sticky='nsew', columnspan=2)
-        self.buttom.grid(row=7, column=2, padx=20, pady=20, sticky='nsew', columnspan=2)
+        self.buttonVoltar.grid(row=7, column=0, padx=20, pady=20, sticky='nsew', columnspan=2)
+        self.button.grid(row=7, column=2, padx=20, pady=20, sticky='nsew', columnspan=2)
     
     def hide(self):
         self.nomeLabel.grid_forget()
@@ -187,8 +187,8 @@ class InterfaceRegistro(ttk.Frame):
         self.potencial.grid_forget()
         self.periculosidadeLabel.grid_forget()
         self.periculosidade.grid_forget()
-        self.buttom.grid_forget()
-        self.buttomVoltar.grid_forget()
+        self.button.grid_forget()
+        self.buttonVoltar.grid_forget()
         self.place_forget()
     
  

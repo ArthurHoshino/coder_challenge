@@ -5,8 +5,9 @@ from tkinter import messagebox
 from src.classes.Registro import Registro
 
 class InterfaceDetalhes(ttk.Frame):
-    def __init__(self, parent, showListarNaves, showEditar):
+    def __init__(self, parent, showMain, showListarNaves, showEditar):
         super().__init__(parent)
+        self.showMain = showMain
         self.showListarNaves = showListarNaves
         self.showEditar = showEditar
         self.registro = Registro()
@@ -55,8 +56,16 @@ class InterfaceDetalhes(ttk.Frame):
     def deletarNave(self):
         resposta = messagebox.askyesno(title='ATENÇÃO', message='Tem certeza de que deseja excluir esse registro?')
         if (resposta):
-            messagebox.showinfo("Sucesso", "Registro excluído com sucesso!")
-            self.showListarNaves()        
+            response = self.registro.deletar(self.naveId)
+            if response == 200:
+                messagebox.showinfo("Sucesso", "Registro excluído com sucesso!")
+                verify = self.registro.getAllNaves()
+                if (len(verify) == 0):
+                    self.showMain()
+                else:
+                    self.showListarNaves()
+            else:
+                messagebox.showerror("Ops!", "Algo deu errado =(")
 
     def toggleItems(self):
         estado = 'disable' if self.toggle else 'normal'
@@ -95,14 +104,14 @@ class InterfaceDetalhes(ttk.Frame):
 
         response = self.registro.getNaveById(self.naveId)
 
-        self.nome.insert(0, response[0][1])
-        self.tamanho.insert(0, self.menuOpt['tamanho'][response[0][2]])
-        self.cor.insert(0, self.menuOpt['cor'][response[0][3]])
-        self.local.insert(0, response[0][4])
-        self.poder.insert(0,  self.menuOpt['poderio'][ response[0][5] // 256 ] )
+        self.nome.insert(0, response[1])
+        self.tamanho.insert(0, self.menuOpt['tamanho'][response[2]])
+        self.cor.insert(0, self.menuOpt['cor'][response[3]])
+        self.local.insert(0, response[4])
+        self.poder.insert(0,  self.menuOpt['poderio'][ response[5] // 256 ] )
 
         # logica das armas selecionadas
-        armasSelecionadas = format((response[0][5] % 256), 'b')[::-1]
+        armasSelecionadas = format((response[5] % 256), 'b')[::-1]
         contador = 0
         for arma in armasSelecionadas:
             if (arma == '1'):
@@ -111,13 +120,13 @@ class InterfaceDetalhes(ttk.Frame):
         for item in self.armasOpt:
             self.armamento.insert(self.armasOpt.index(item), item)
 
-        self.combustivel.insert(0, response[0][6])
-        self.qtdSobrevivente.insert(0, response[0][7])
-        self.estadoSobrevivente.insert(0, response[0][8])
-        self.avaria.insert(0, self.menuOpt['avaria'][response[0][9]])
-        self.potencial.insert(0, self.menuOpt['potencial'][response[0][10]])
-        self.periculosidade.insert(0, self.menuOpt['periculosidade'][response[0][11]])
-        self.classificacao.insert(0, response[0][12])
+        self.combustivel.insert(0, response[6])
+        self.qtdSobrevivente.insert(0, response[7])
+        self.estadoSobrevivente.insert(0, response[8])
+        self.avaria.insert(0, self.menuOpt['avaria'][response[9]])
+        self.potencial.insert(0, self.menuOpt['potencial'][response[10]])
+        self.periculosidade.insert(0, self.menuOpt['periculosidade'][response[11]])
+        self.classificacao.insert(0, response[12])
 
         # desabilitar campos
         self.toggleItems()

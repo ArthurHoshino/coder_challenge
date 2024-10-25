@@ -8,25 +8,48 @@ class Registro:
     def criarTabelas(self):
         with closing(sqlite3.connect("coderchallenge.db")) as connection:
             with closing(connection.cursor()) as cursor:
-                cursor.execute("""
-                    CREATE TABLE IF NOT EXISTS naves(
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        nome TEXT,
-                        tamanho INTEGER,
-                        cor INTEGER,
-                        local_queda TEXT,
-                        armamento INTEGER,
-                        combustivel TEXT,
-                        tripulacao_sobrevivente INTEGER,
-                        tripulacao_estado TEXT,
-                        avaria INTEGER,
-                        potencial_tech INTEGER,
-                        grau_periculosidade INTEGER,
-                        classificacao TEXT,
-                        created_at TEXT,
-                        updated_at TEXT
-                    );
-                """)
+                try:
+                    cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS naves(
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            nome TEXT,
+                            tamanho INTEGER,
+                            cor INTEGER,
+                            local_queda TEXT,
+                            armamento INTEGER,
+                            combustivel TEXT,
+                            tripulacao_sobrevivente INTEGER,
+                            tripulacao_estado TEXT,
+                            avaria INTEGER,
+                            potencial_tech INTEGER,
+                            grau_periculosidade INTEGER,
+                            classificacao TEXT,
+                            created_at TEXT,
+                            updated_at TEXT
+                        );
+                    """)
+                    cursor.execute('''
+                        CREATE TABLE IF NOT EXISTS naves_deletadas(
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            nave_id INTEGER NOT NULL,
+                            nome TEXT,
+                            tamanho INTEGER,
+                            cor INTEGER,
+                            local_queda TEXT,
+                            armamento INTEGER,
+                            combustivel TEXT,
+                            tripulacao_sobrevivente INTEGER,
+                            tripulacao_estado TEXT,
+                            avaria INTEGER,
+                            potencial_tech INTEGER,
+                            grau_periculosidade INTEGER,
+                            classificacao TEXT,
+                            deleted_at TEXT
+                        );
+                    ''')
+                except sqlite3.IntegrityError:
+                    connection.rollback()
+
     
     def resetarTabela(self):
         with closing(sqlite3.connect("coderchallenge.db")) as connection:
@@ -134,13 +157,57 @@ class Registro:
                     retorno = 500
         return retorno
 
-    def deletar(self):
+    def deletar(self, id):
         retorno = 200
         with closing(sqlite3.connect("coderchallenge.db")) as connection:
             with closing(connection.cursor()) as cursor:
                 try:
-                    cursor.execute("""""")
+                    row = cursor.execute("""
+                        SELECT * FROM naves WHERE id = ?
+                    """, (id,)).fetchone()
+
+                    cursor.execute("""
+                        INSERT INTO naves_deletadas (
+                            nave_id,
+                            nome,
+                            tamanho,
+                            cor,
+                            local_queda,
+                            armamento,
+                            combustivel,
+                            tripulacao_sobrevivente,
+                            tripulacao_estado,
+                            avaria,
+                            potencial_tech,
+                            grau_periculosidade,
+                            classificacao,
+                            deleted_at           
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                    """, (
+                        row[0],
+                        row[1],
+                        row[2],
+                        row[3],
+                        row[4],
+                        row[5],
+                        row[6],
+                        row[7],
+                        row[8],
+                        row[9],
+                        row[10],
+                        row[11],
+                        row[12],
+                    ))
+
+                    cursor.execute("""
+                        DELETE FROM naves
+                        WHERE id = ?
+                    """, (id,))
+
+                    connection.commit()
                 except Exception as e:
+                    connection.rollback()
                     retorno = 500
         
         return retorno
@@ -162,7 +229,7 @@ class Registro:
                 row = cursor.execute("""
                     SELECT * FROM naves
                     WHERE naves.id = ?
-                """, (id,)).fetchall()
+                """, (id,)).fetchone()
         
         return row
         

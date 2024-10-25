@@ -19,7 +19,6 @@ class InterfaceRegistro(ttk.Frame):
             "cor": tk.StringVar(self),
             "local_queda": tk.StringVar(self),
             "poderio": tk.StringVar(self),
-            "armas": list(),
             "combustiveis": tk.StringVar(self),
             "qtdSobrevivente": tk.StringVar(self),
             "trip_estado": tk.StringVar(self),
@@ -42,7 +41,7 @@ class InterfaceRegistro(ttk.Frame):
         self.poderLabel = ttk.Label(self, text="Poderio bélico", font=('Comic Sans MS', 12))
         self.poder = ttk.OptionMenu(self, self.optValue['poderio'], self.menuOpt['poderio'][0], *self.menuOpt['poderio'])
         self.armamentoLabel = ttk.Label(self, text="Armamento", font=('Comic Sans MS', 12))
-        self.armamento = tk.Listbox(self, self.optValue['armas'], selectmode="multiple", exportselection=0)
+        self.armamento = tk.Listbox(self, selectmode="multiple", exportselection=0)
         for item in self.menuOpt['armas']:
             self.armamento.insert(self.menuOpt['armas'].index(item), item)
 
@@ -69,19 +68,18 @@ class InterfaceRegistro(ttk.Frame):
             return False
     
     def resetValues(self):
-        self.optValue = {
-            "tamanho": tk.StringVar(self),
-            "cor": tk.StringVar(self),
-            "local_queda": tk.StringVar(self),
-            "poderio": tk.StringVar(self),
-            "armas": list(),
-            "combustiveis": tk.StringVar(self),
-            "qtdSobrevivente": tk.StringVar(self),
-            "trip_estado": tk.StringVar(self),
-            "avaria": tk.StringVar(self),
-            "potencial": tk.StringVar(self),
-            "periculosidade": tk.StringVar(self)
-        }
+        self.armamento.selection_clear(0, tk.END)
+        self.tamanho.set_menu(self.menuOpt['tamanho'][0], *self.menuOpt['tamanho'])
+        self.cor.set_menu(self.menuOpt['cor'][0], *self.menuOpt['cor'])
+        self.local.set_menu(self.menuOpt['local_queda'][0], *self.menuOpt['local_queda'])
+        self.poder.set_menu(self.menuOpt['poderio'][0], *self.menuOpt['poderio'])
+        self.combustivel.set_menu(self.menuOpt['combustiveis'][0], *self.menuOpt['combustiveis'])
+        self.estadoSobrevivente.set_menu(self.menuOpt['trip_estado'][0], *self.menuOpt['trip_estado'])
+        self.avaria.set_menu(self.menuOpt['avaria'][0], *self.menuOpt['avaria'])
+        self.potencial.set_menu(self.menuOpt['potencial'][0], *self.menuOpt['potencial'])
+        self.periculosidade.set_menu(self.menuOpt['periculosidade'][0], *self.menuOpt['periculosidade'])
+        self.nome.delete(0, tk.END)
+        self.qtdSobrevivente.delete(0, tk.END)
     
     def registrar(self):
         data = {}
@@ -128,6 +126,7 @@ class InterfaceRegistro(ttk.Frame):
             self.menuOpt = json.load(f)
 
     def show(self):
+        self.resetValues()
         self.place(relx=0.5, rely=0.5, relwidth=0.95, relheight=0.95, anchor='center')
         self.columnconfigure((0, 1, 2, 3), weight=1, uniform='a')
         self.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight=1, uniform='a')

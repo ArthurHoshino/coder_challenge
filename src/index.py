@@ -20,7 +20,7 @@ class InterfaceIndex(tk.Tk):
         self.interface_main = InterfaceMain(self, self.show_registro, self.show_listar_naves)
         self.interface_registro = InterfaceRegistro(self, self.show_main)
         self.interface_listar_naves = InterfaceListarNaves(self, self.show_main, self.show_detalhes)
-        self.interface_detalhes = InterfaceDetalhes(self, self.show_listar_naves, self.show_editar)
+        self.interface_detalhes = InterfaceDetalhes(self, self.show_main, self.show_listar_naves, self.show_editar)
         self.interface_editar = InterfaceEditar(self, self.show_listar_naves, self.show_detalhes)
 
         # chamada

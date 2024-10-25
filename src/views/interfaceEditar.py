@@ -123,43 +123,44 @@ class InterfaceEditar(ttk.Frame):
         response = self.registro.getNaveById(self.naveId)
 
         # DEFINIR OS VALORES DAS VARIAVEIS DE CADA CAMPO
-        self.optValue['nome'].set(response[0][1])
-        self.optValue['tamanho'].set(self.menuOpt['tamanho'][response[0][2]])
-        self.optValue['cor'].set(self.menuOpt['cor'][response[0][3]])
-        self.optValue['local_queda'].set(self.menuOpt['local_queda'][self.menuOpt['local_queda'].index(response[0][4])])
-        self.optValue['poderio'].set(self.menuOpt['poderio'][response[0][5] // 256])
-        self.optValue['combustiveis'].set(self.menuOpt['combustiveis'][self.menuOpt['combustiveis'].index(response[0][6])])
-        self.optValue['qtdSobrevivente'].set(response[0][7])
-        self.optValue['trip_estado'].set(self.menuOpt['trip_estado'][self.menuOpt['trip_estado'].index(response[0][8])])
-        self.optValue['avaria'].set(self.menuOpt['avaria'][response[0][9]])
-        self.optValue['potencial'].set(self.menuOpt['potencial'][response[0][10]])
-        self.optValue['periculosidade'].set(self.menuOpt['periculosidade'][response[0][11]])
+        self.optValue['nome'].set(response[1])
+        self.optValue['tamanho'].set(self.menuOpt['tamanho'][response[2]])
+        self.optValue['cor'].set(self.menuOpt['cor'][response[3]])
+        self.optValue['local_queda'].set(self.menuOpt['local_queda'][self.menuOpt['local_queda'].index(response[4])])
+        self.optValue['poderio'].set(self.menuOpt['poderio'][response[5] // 256])
+        self.optValue['combustiveis'].set(self.menuOpt['combustiveis'][self.menuOpt['combustiveis'].index(response[6])])
+        self.optValue['qtdSobrevivente'].set(response[7])
+        self.optValue['trip_estado'].set(self.menuOpt['trip_estado'][self.menuOpt['trip_estado'].index(response[8])])
+        self.optValue['avaria'].set(self.menuOpt['avaria'][response[9]])
+        self.optValue['potencial'].set(self.menuOpt['potencial'][response[10]])
+        self.optValue['periculosidade'].set(self.menuOpt['periculosidade'][response[11]])
 
         # DEFINIR OS VALORES DOS CAMPOS
-        # self.nome.insert(0, response[0][1])
-        self.tamanho.set_menu(self.menuOpt['tamanho'][response[0][2]], *self.menuOpt['tamanho'])
-        self.cor.set_menu(self.menuOpt['cor'][response[0][3]], *self.menuOpt['cor'])
-        self.local.set_menu(self.menuOpt['local_queda'][self.menuOpt['local_queda'].index(response[0][4])], *self.menuOpt['local_queda'])
-        self.poder.set_menu(self.menuOpt['poderio'][response[0][5] // 256], *self.menuOpt['poderio'])
+        # self.nome.insert(0, response[1])
+        self.tamanho.set_menu(self.menuOpt['tamanho'][response[2]], *self.menuOpt['tamanho'])
+        self.cor.set_menu(self.menuOpt['cor'][response[3]], *self.menuOpt['cor'])
+        self.local.set_menu(self.menuOpt['local_queda'][self.menuOpt['local_queda'].index(response[4])], *self.menuOpt['local_queda'])
+        self.poder.set_menu(self.menuOpt['poderio'][response[5] // 256], *self.menuOpt['poderio'])
 
         # logica das armas selecionadas
-        armasSelecionadas = format((response[0][5] % 256), 'b')[::-1]
+        armasSelecionadas = format((response[5] % 256), 'b')[::-1]
         contador = 0
         for arma in armasSelecionadas:
             if (arma == '1'):
                 self.armamento.select_set(contador)
             contador += 1
 
-        self.combustivel.set_menu(self.menuOpt['combustiveis'][self.menuOpt['combustiveis'].index(response[0][6])], *self.menuOpt['combustiveis'])
-        # self.qtdSobrevivente.insert(0, response[0][7])
-        self.estadoSobrevivente.set_menu(self.menuOpt['trip_estado'][self.menuOpt['trip_estado'].index(response[0][8])], *self.menuOpt['trip_estado'])
-        self.avaria.set_menu(self.menuOpt['avaria'][response[0][9]], *self.menuOpt['avaria'])
-        self.potencial.set_menu(self.menuOpt['potencial'][response[0][10]], *self.menuOpt['potencial'])
-        self.periculosidade.set_menu(self.menuOpt['periculosidade'][response[0][11]], *self.menuOpt['periculosidade'])
+        self.combustivel.set_menu(self.menuOpt['combustiveis'][self.menuOpt['combustiveis'].index(response[6])], *self.menuOpt['combustiveis'])
+        # self.qtdSobrevivente.insert(0, response[7])
+        self.estadoSobrevivente.set_menu(self.menuOpt['trip_estado'][self.menuOpt['trip_estado'].index(response[8])], *self.menuOpt['trip_estado'])
+        self.avaria.set_menu(self.menuOpt['avaria'][response[9]], *self.menuOpt['avaria'])
+        self.potencial.set_menu(self.menuOpt['potencial'][response[10]], *self.menuOpt['potencial'])
+        self.periculosidade.set_menu(self.menuOpt['periculosidade'][response[11]], *self.menuOpt['periculosidade'])
     
     def resetValues(self):
         self.nome.delete(0, tk.END)
         self.qtdSobrevivente.delete(0, tk.END)
+        self.armamento.selection_clear(0, tk.END)
 
     def show(self):
         self.place(relx=0.5, rely=0.5, relwidth=0.95, relheight=0.95, anchor='center')

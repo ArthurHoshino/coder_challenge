@@ -48,7 +48,7 @@ class InterfaceDetalhes(ttk.Frame):
         self.periculosidade = ttk.Entry(self)
         self.classificacaoLabel = ttk.Label(self, text="Classificação", font=('Comic Sans MS', 12))
         self.classificacao = ttk.Entry(self)
-        self.qtdInfoLabel = ttk.Label(self, text="Quantidade de informações", font=('Comic Sans MS', 12))
+        self.qtdInfoLabel = ttk.Label(self, text="Informações armazenadas", font=('Comic Sans MS', 12))
         self.qtdInfo = ttk.Entry(self)
 
         self.buttonVoltar = ttk.Button(self, text="Voltar", command=self.showListarNaves)

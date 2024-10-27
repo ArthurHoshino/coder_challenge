@@ -28,7 +28,8 @@
     "poderio": [
         "Baixo",
         "Moderado",
-        "Alto"
+        "Alto",
+        "Muito alto"
     ],
     "armas": [
         "Solar Flare Cannon",
@@ -80,6 +81,7 @@
     "info": [
         "Baixo",
         "Mediano",
-        "Alto"
+        "Alto",
+        "Muito alto"
     ]
 }

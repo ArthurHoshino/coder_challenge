@@ -63,7 +63,7 @@ class InterfaceEditar(ttk.Frame):
         self.periculosidadeLabel = ttk.Label(self, text="Grau de periculosidade", font=('Comic Sans MS', 12))
         self.periculosidade = ttk.OptionMenu(self, self.optValue['periculosidade'], self.menuOpt['periculosidade'][0], *self.menuOpt['periculosidade'])
 
-        self.qtdInfoLabel = ttk.Label(self, text="Quantidade de informações", font=('Comic Sans MS', 12))
+        self.qtdInfoLabel = ttk.Label(self, text="Informações armazenadas", font=('Comic Sans MS', 12))
         self.qtdInfo = ttk.OptionMenu(self, self.optValue['qtdInfo'], self.menuOpt['info'][0], *self.menuOpt['info'])
 
         self.buttonVoltar = ttk.Button(self, text="Voltar", command=self.showDetalhes)

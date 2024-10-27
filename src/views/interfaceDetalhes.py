@@ -48,6 +48,8 @@ class InterfaceDetalhes(ttk.Frame):
         self.periculosidade = ttk.Entry(self)
         self.classificacaoLabel = ttk.Label(self, text="Classificação", font=('Comic Sans MS', 12))
         self.classificacao = ttk.Entry(self)
+        self.qtdInfoLabel = ttk.Label(self, text="Quantidade de informações", font=('Comic Sans MS', 12))
+        self.qtdInfo = ttk.Entry(self)
 
         self.buttonVoltar = ttk.Button(self, text="Voltar", command=self.showListarNaves)
         self.button = ttk.Button(self, text="Editar Informações", command=self.buscarNave)
@@ -82,6 +84,7 @@ class InterfaceDetalhes(ttk.Frame):
         self.potencial.configure(state=estado)
         self.periculosidade.configure(state=estado)
         self.classificacao.configure(state=estado)
+        self.qtdInfo.configure(state=estado)
 
         self.toggle = True
     
@@ -126,7 +129,8 @@ class InterfaceDetalhes(ttk.Frame):
         self.avaria.insert(0, self.menuOpt['avaria'][response[9]])
         self.potencial.insert(0, self.menuOpt['potencial'][response[10]])
         self.periculosidade.insert(0, self.menuOpt['periculosidade'][response[11]])
-        self.classificacao.insert(0, response[12])
+        self.qtdInfo.insert(0, self.menuOpt['info'][response[12]])
+        self.classificacao.insert(0, response[13])
 
         # desabilitar campos
         self.toggleItems()
@@ -145,12 +149,13 @@ class InterfaceDetalhes(ttk.Frame):
         self.avaria.delete(0, tk.END)
         self.potencial.delete(0, tk.END)
         self.periculosidade.delete(0, tk.END)
+        self.qtdInfo.delete(0, tk.END)
         self.classificacao.delete(0, tk.END)
 
     def show(self):
         self.place(relx=0.5, rely=0.5, relwidth=0.95, relheight=0.95, anchor='center')
         self.columnconfigure((0, 1, 2, 3), weight=1, uniform='a')
-        self.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight=1, uniform='a')
+        self.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=1, uniform='a')
 
         self.nomeLabel.grid(row=0, column=0, padx=10, pady=20, sticky='nsew')
         self.nome.grid(row=0, column=1, padx=10, pady=20, sticky='nsew')
@@ -165,6 +170,8 @@ class InterfaceDetalhes(ttk.Frame):
         self.poder.grid(row=4, column=1, padx=10, pady=20, sticky='nsew')
         self.armamentoLabel.grid(row=5, column=0, padx=10, pady=20, sticky='nsew', rowspan=2)
         self.armamento.grid(row=5, column=1, padx=10, pady=20, sticky='nsew', rowspan=2)
+        self.classificacaoLabel.grid(row=7, column=0, padx=10, pady=20, sticky='nsew')
+        self.classificacao.grid(row=7, column=1, padx=10, pady=20, sticky='nsew')
 
         self.qtdSobreviventeLabel.grid(row=0, column=2, padx=10, pady=20, sticky='nsew')
         self.qtdSobrevivente.grid(row=0, column=3, padx=10, pady=20, sticky='nsew')
@@ -178,12 +185,12 @@ class InterfaceDetalhes(ttk.Frame):
         self.periculosidade.grid(row=4, column=3, padx=10, pady=20, sticky='nsew')
         self.combustivelLabel.grid(row=5, column=2, padx=10, pady=20, sticky='nsew')
         self.combustivel.grid(row=5, column=3, padx=10, pady=20, sticky='nsew')
-        self.classificacaoLabel.grid(row=6, column=2, padx=10, pady=20, sticky='nsew')
-        self.classificacao.grid(row=6, column=3, padx=10, pady=20, sticky='nsew')
+        self.qtdInfoLabel.grid(row=6, column=2, padx=10, pady=20, sticky='nsew')
+        self.qtdInfo.grid(row=6, column=3, padx=10, pady=20, sticky='nsew')
 
-        self.buttonVoltar.grid(row=7, column=0, padx=20, pady=20, sticky='nsew')
-        self.button.grid(row=7, column=1, padx=20, pady=20, sticky='nsew', columnspan=2)
-        self.buttonDeletar.grid(row=7, column=3, padx=20, pady=20, sticky='nsew')
+        self.buttonVoltar.grid(row=8, column=0, padx=20, pady=20, sticky='nsew')
+        self.button.grid(row=8, column=1, padx=20, pady=20, sticky='nsew', columnspan=2)
+        self.buttonDeletar.grid(row=8, column=3, padx=20, pady=20, sticky='nsew')
     
     def hide(self):
         self.nomeLabel.grid_forget()
@@ -212,6 +219,8 @@ class InterfaceDetalhes(ttk.Frame):
         self.periculosidade.grid_forget()
         self.classificacaoLabel.grid_forget()
         self.classificacao.grid_forget()
+        self.qtdInfoLabel.grid_forget()
+        self.qtdInfo.grid_forget()
         self.button.grid_forget()
         self.buttonVoltar.grid_forget()
         self.buttonDeletar.grid_forget()

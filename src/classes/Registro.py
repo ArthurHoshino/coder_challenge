@@ -23,6 +23,7 @@ class Registro:
                             avaria INTEGER,
                             potencial_tech INTEGER,
                             grau_periculosidade INTEGER,
+                            qtd_info INTEGER,
                             classificacao TEXT,
                             created_at TEXT,
                             updated_at TEXT
@@ -43,6 +44,7 @@ class Registro:
                             avaria INTEGER,
                             potencial_tech INTEGER,
                             grau_periculosidade INTEGER,
+                            qtd_info INTEGER,
                             classificacao TEXT,
                             deleted_at TEXT
                         );
@@ -69,6 +71,7 @@ class Registro:
                         avaria INTEGER,
                         potencial_tech INTEGER,
                         grau_periculosidade INTEGER,
+                        qtd_info INTEGER,
                         classificacao TEXT
                     );
                 """)
@@ -92,10 +95,11 @@ class Registro:
                             avaria,
                             potencial_tech,
                             grau_periculosidade,
+                            qtd_info,
                             classificacao,
                             created_at,
                             updated_at
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
                     """, (data['nome'],
                         data['tamanho'],
                         data['cor'],
@@ -107,6 +111,7 @@ class Registro:
                         data['avaria'],
                         data['potencial'],
                         data['periculosidade'],
+                        data['info'],
                         classificacao
                     ))
                     connection.commit()
@@ -134,6 +139,7 @@ class Registro:
                             avaria= ?,
                             potencial_tech= ?,
                             grau_periculosidade= ?,
+                            qtd_info = ?,
                             classificacao= ?,
                             updated_at = CURRENT_TIMESTAMP
                         WHERE id = ?;
@@ -148,6 +154,7 @@ class Registro:
                         data['avaria'],
                         data['potencial'],
                         data['periculosidade'],
+                        data['info'],
                         classificacao,
                         data['id'],
                     ))
@@ -180,10 +187,11 @@ class Registro:
                             avaria,
                             potencial_tech,
                             grau_periculosidade,
+                            qtd_info,
                             classificacao,
                             deleted_at           
                         )
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                     """, (
                         row[0],
                         row[1],
@@ -198,6 +206,7 @@ class Registro:
                         row[10],
                         row[11],
                         row[12],
+                        row[13],
                     ))
 
                     cursor.execute("""

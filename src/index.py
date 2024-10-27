@@ -11,8 +11,8 @@ from src.views.interfaceEditar import InterfaceEditar
 class InterfaceIndex(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.geometry("1250x650")
-        self.minsize(1200, 650)
+        self.geometry("1250x750")
+        self.minsize(1200, 700)
 
         self.appRunning = False
 

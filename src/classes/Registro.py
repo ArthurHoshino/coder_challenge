@@ -1,9 +1,74 @@
-import sqlite3
+import sqlite3, json
 from contextlib import closing
 
 class Registro:
     def __init__(self):
         self.criarTabelas()
+        self.classificacaoMetrica = {
+            "Sucata Espacial": {
+                "poderio": [0],
+                "armas": [],
+                "combustivel": [],
+                "avaria": [3, 4, 5],
+                "potencial": [0],
+                "periculosidade": [0, 1],
+                "qtdInfo": [0]
+            },
+            "Joia Tecnológica": {
+                "poderio": [0],
+                "armas": [0, 1, 2],
+                "combustivel": [],
+                "avaria": [0, 1, 2],
+                "potencial": [2, 3],
+                "periculosidade": [0, 1],
+                "qtdInfo": [0, 1]
+            },
+            "Arsenal Alienígena": {
+                "poderio": [2, 3],
+                "armas": [3, 4, 5],
+                "combustivel": [],
+                "avaria": [0, 1],
+                "potencial": [1, 2, 3],
+                "periculosidade": [2],
+                "qtdInfo": [0, 1]
+            },
+            "Ameaça em Potencial": {
+                "poderio": [2, 3],
+                "armas": [6, 7, 8],
+                "combustivel": [2, 5, 6],
+                "avaria": [0, 1, 2, 3],
+                "potencial": [2, 3],
+                "periculosidade": [2, 3],
+                "qtdInfo": [0, 1]
+            },
+            "Fonte de Energia Alternativa": {
+                "poderio": [0, 1],
+                "armas": [0, 1],
+                "combustivel": [2, 3, 4],
+                "avaria": [0, 1, 2],
+                "potencial": [1, 2, 3],
+                "periculosidade": [0, 1],
+                "qtdInfo": [0, 1]
+            },
+            "Enigma Científico": {
+                "poderio": [0, 1],
+                "armas": [0, 1, 2],
+                "combustivel": [],
+                "avaria": [0, 1, 2, 3],
+                "potencial": [3],
+                "periculosidade": [0, 1],
+                "qtdInfo": [2, 3]
+            },
+            "Biblioteca Intergalática": {
+                "poderio": [0],
+                "armas": [0, 1],
+                "combustivel": [],
+                "avaria": [0, 1],
+                "potencial": [0, 1, 2],
+                "periculosidade": [0],
+                "qtdInfo": [2, 3]
+            }
+        }
 
     def criarTabelas(self):
         with closing(sqlite3.connect("coderchallenge.db")) as connection:
@@ -23,6 +88,7 @@ class Registro:
                             avaria INTEGER,
                             potencial_tech INTEGER,
                             grau_periculosidade INTEGER,
+                            qtd_info INTEGER,
                             classificacao TEXT,
                             created_at TEXT,
                             updated_at TEXT
@@ -43,6 +109,7 @@ class Registro:
                             avaria INTEGER,
                             potencial_tech INTEGER,
                             grau_periculosidade INTEGER,
+                            qtd_info INTEGER,
                             classificacao TEXT,
                             deleted_at TEXT
                         );
@@ -69,6 +136,7 @@ class Registro:
                         avaria INTEGER,
                         potencial_tech INTEGER,
                         grau_periculosidade INTEGER,
+                        qtd_info INTEGER,
                         classificacao TEXT
                     );
                 """)
@@ -92,10 +160,11 @@ class Registro:
                             avaria,
                             potencial_tech,
                             grau_periculosidade,
+                            qtd_info,
                             classificacao,
                             created_at,
                             updated_at
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
                     """, (data['nome'],
                         data['tamanho'],
                         data['cor'],
@@ -107,10 +176,12 @@ class Registro:
                         data['avaria'],
                         data['potencial'],
                         data['periculosidade'],
+                        data['info'],
                         classificacao
                     ))
                     connection.commit()
                 except Exception as e:
+                    connection.rollback()
                     print(e)
                     retorno = 500
         return retorno
@@ -134,6 +205,7 @@ class Registro:
                             avaria= ?,
                             potencial_tech= ?,
                             grau_periculosidade= ?,
+                            qtd_info = ?,
                             classificacao= ?,
                             updated_at = CURRENT_TIMESTAMP
                         WHERE id = ?;
@@ -148,6 +220,7 @@ class Registro:
                         data['avaria'],
                         data['potencial'],
                         data['periculosidade'],
+                        data['info'],
                         classificacao,
                         data['id'],
                     ))
@@ -180,24 +253,26 @@ class Registro:
                             avaria,
                             potencial_tech,
                             grau_periculosidade,
+                            qtd_info,
                             classificacao,
                             deleted_at           
                         )
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                     """, (
-                        row[0],
-                        row[1],
-                        row[2],
-                        row[3],
-                        row[4],
-                        row[5],
-                        row[6],
-                        row[7],
-                        row[8],
-                        row[9],
-                        row[10],
-                        row[11],
-                        row[12],
+                        row[0], # id
+                        row[1], # nome
+                        row[2], # tamanho
+                        row[3], # cor
+                        row[4], # local_queda
+                        row[5], # armamento
+                        row[6], # combustivel
+                        row[7], # sobrevivente
+                        row[8], # estado
+                        row[9], # avaria
+                        row[10], # potencial
+                        row[11], # periculosidade
+                        row[12], # info
+                        row[13],
                     ))
 
                     cursor.execute("""
@@ -234,5 +309,43 @@ class Registro:
         return row
         
     def gerarClassificacao(self, data: dict):
-        return "Classificacao Placeholder"
+        classificacaoPonto = {
+            "Ameaça em Potencial": 0,
+            "Arsenal Alienígena": 0,
+            "Joia Tecnológica": 0,
+            "Biblioteca Intergalática": 0,
+            "Enigma Científico": 0,
+            "Fonte de Energia Alternativa": 0,
+            "Sucata Espacial": 0
+        }
+
+        with open("src/options.json", "r", encoding='utf-8') as f:
+            d = json.load(f)
+            combustivelOpt = d['combustiveis']
+
+        armasData = format((data['armamento'] % 256), 'b')
+        qtdArmas = 0
+        for i in armasData:
+            if (i == '1'):
+                qtdArmas += 1
+
+        naveDados = {
+            "poderio": data['armamento'] // 256,
+            "armas": qtdArmas,
+            "combustivel": combustivelOpt.index(data['combustivel']),
+            "avaria": data['avaria'],
+            "potencial": data['potencial'],
+            "periculosidade": data['periculosidade'],
+            "qtdInfo": data['info']
+        }
+
+        for i, j in self.classificacaoMetrica.items():
+            for x, y in zip(j.values(), naveDados.values()):
+                if (len(x) != 0 and y in x):
+                    classificacaoPonto[i] += 1
+            
+        # print(classificacaoPonto)
+        classificacao = max(classificacaoPonto, key=classificacaoPonto.get)
+        
+        return classificacao
 

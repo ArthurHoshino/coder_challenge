@@ -28,7 +28,8 @@
     "poderio": [
         "Baixo",
         "Moderado",
-        "Alto"
+        "Alto",
+        "Muito alto"
     ],
     "armas": [
         "Solar Flare Cannon",
@@ -56,8 +57,7 @@
         "Violento",
         "Coma",
         "Doente",
-        "Terminal",
-        "Morto"
+        "Terminal"
     ],
     "avaria": [
         "Novo",
@@ -77,5 +77,11 @@
         "Moderado",
         "Alto",
         "Crítico"
+    ],
+    "info": [
+        "Baixo",
+        "Mediano",
+        "Alto",
+        "Muito alto"
     ]
 }

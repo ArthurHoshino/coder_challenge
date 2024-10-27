@@ -24,7 +24,8 @@ class InterfaceRegistro(ttk.Frame):
             "trip_estado": tk.StringVar(self),
             "avaria": tk.StringVar(self),
             "potencial": tk.StringVar(self),
-            "periculosidade": tk.StringVar(self)
+            "periculosidade": tk.StringVar(self),
+            "qtdInfo": tk.StringVar(self)
         }
 
         # registro
@@ -58,6 +59,9 @@ class InterfaceRegistro(ttk.Frame):
         self.periculosidadeLabel = ttk.Label(self, text="Grau de periculosidade", font=('Comic Sans MS', 12))
         self.periculosidade = ttk.OptionMenu(self, self.optValue['periculosidade'], self.menuOpt['periculosidade'][0], *self.menuOpt['periculosidade'])
 
+        self.qtdInfoLabel = ttk.Label(self, text="Informações armazenadas", font=('Comic Sans MS', 12))
+        self.qtdInfo = ttk.OptionMenu(self, self.optValue['qtdInfo'], self.menuOpt['info'][0], *self.menuOpt['info'])
+
         self.buttonVoltar = ttk.Button(self, text="Voltar", command=self.showMain)
         self.button = ttk.Button(self, text="Enviar", command=self.registrar)
     
@@ -78,6 +82,7 @@ class InterfaceRegistro(ttk.Frame):
         self.avaria.set_menu(self.menuOpt['avaria'][0], *self.menuOpt['avaria'])
         self.potencial.set_menu(self.menuOpt['potencial'][0], *self.menuOpt['potencial'])
         self.periculosidade.set_menu(self.menuOpt['periculosidade'][0], *self.menuOpt['periculosidade'])
+        self.qtdInfo.set_menu(self.menuOpt['info'][0], *self.menuOpt['info'])
         self.nome.delete(0, tk.END)
         self.qtdSobrevivente.delete(0, tk.END)
     
@@ -96,6 +101,7 @@ class InterfaceRegistro(ttk.Frame):
         data['avaria'] = self.menuOpt['avaria'].index(self.optValue['avaria'].get()) # int
         data['potencial'] = self.menuOpt['potencial'].index(self.optValue['potencial'].get()) # int
         data['periculosidade'] = self.menuOpt['periculosidade'].index(self.optValue['periculosidade'].get()) # int
+        data['info'] = self.menuOpt['info'].index(self.optValue['qtdInfo'].get()) # int
 
         reslist = list()
         combinacaoValor = 0
@@ -158,6 +164,9 @@ class InterfaceRegistro(ttk.Frame):
         self.combustivelLabel.grid(row=5, column=2, padx=10, pady=20, sticky='nsew')
         self.combustivel.grid(row=5, column=3, padx=10, pady=20, sticky='nsew')
 
+        self.qtdInfoLabel.grid(row=6, column=2, padx=10, pady=20, sticky='nsew')
+        self.qtdInfo.grid(row=6, column=3, padx=10, pady=20, sticky='nsew')
+
         self.buttonVoltar.grid(row=7, column=0, padx=20, pady=20, sticky='nsew', columnspan=2)
         self.button.grid(row=7, column=2, padx=20, pady=20, sticky='nsew', columnspan=2)
     
@@ -186,6 +195,8 @@ class InterfaceRegistro(ttk.Frame):
         self.potencial.grid_forget()
         self.periculosidadeLabel.grid_forget()
         self.periculosidade.grid_forget()
+        self.qtdInfoLabel.grid_forget()
+        self.qtdInfo.grid_forget()
         self.button.grid_forget()
         self.buttonVoltar.grid_forget()
         self.place_forget()
